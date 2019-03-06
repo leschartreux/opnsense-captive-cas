@@ -1,3 +1,4 @@
+<?php require_once 'phpCAS-1.3.6/CAS.php';?>
 <!doctype html>
 <html>
 <head>

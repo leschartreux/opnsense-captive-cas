@@ -64,12 +64,13 @@ $user = phpCAS::getUser();
                     }).done(function(data) {
                         // redirect on successful login
                         if (data['clientState'] == 'AUTHORIZED') {
+                            var redir;
                             if (getURLparams()['redirurl'] != undefined) {
-                                var redir='index.html?'+getURLparams()['redirurl']+'?refresh';
+                                redir='http://'+getURLparams()['redirurl']+'?refresh';
                             } else {
-                                redir='index.html'
+                                redir='/index.html'
                             }
-                            $(location).attr(href,redir);
+                            $(location).attr('href',redir);
                         } else {
                             $("#inputUsername").val("");
                             $("#inputPassword").val("");

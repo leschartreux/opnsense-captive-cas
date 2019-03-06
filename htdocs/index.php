@@ -81,7 +81,7 @@ $( document ).ready(function() {
 				type: "POST",
 				url: "/api/captiveportal/access/logon/" + zoneid + "/",
 				dataType:"json",
-				data:{ user: 'test', password: '' }
+				data:{ user: 'toto', password: '' }
 			}).done(function(data) {
 				// redirect on successful login
 				if (data['clientState'] == 'AUTHORIZED') {

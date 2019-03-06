@@ -3,10 +3,12 @@
 $cas_host='cas.leschartreux.com';
 $cas_port=443;
 $cas_context='/';
-$cas_cert='cas.leschartreux.com.pem';
+$cas_cert='/usr/local/etc/cert.pem';
 
+phpCAS::setDebug('/tmp/CAS.log');
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 phpCAS::setCasServerCACert($cas_cert);
+//phpCAS::setNoCasServerValidation();
 
 
 phpCAS::forceAuthentication();

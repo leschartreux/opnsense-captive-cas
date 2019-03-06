@@ -142,6 +142,10 @@ $( document ).ready(function() {
 							$("#logout_frm").removeClass('hidden');
 						} else if (data['authType'] == 'none') {
 							$("#login_none").removeClass('hidden');
+							if (getURLparams()['redirurl'] != undefined)
+							{
+								$("#formsso").attr('action','sso.php?'+getURLparams()['redirurl'];
+							}
 						} else {
 							$("#login_password").removeClass('hidden');
 						}
@@ -179,8 +183,8 @@ $( document ).ready(function() {
 	</div>
 	<!-- User option 2: login needed, without username, password -->
 	<div id="login_none" class="hidden">
-	<form class="form-signin" action=sso.php<script>if (getURLparams()['redirurl'] != undefined){ document.write(getURLparams()['redirurl']) } </script> >
-	<button class="btn btn-primary btn-block" id="signin_sso" type="submit">Sign in</button>
+	<form class="form-signin" id="formsso" action="sso.php" >
+	<button class="btn btn-primary btn-block" id="signin_sso" type="submit">Connexion CAS</button>
 	</form>
 	</div>
 	<!-- User option 3: Already logged in, show logout button -->

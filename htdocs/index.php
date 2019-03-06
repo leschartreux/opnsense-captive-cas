@@ -179,7 +179,7 @@ $( document ).ready(function() {
 	</div>
 	<!-- User option 2: login needed, without username, password -->
 	<div id="login_none" class="hidden">
-	<form class="form-signin" action="sso.php">
+	<form class="form-signin" action=sso.php<script>if (getURLparams()['redirurl'] != undefined){ document.write(getURLparams()['redirurl']) } </script> >
 	<button class="btn btn-primary btn-block" id="signin_sso" type="submit">Sign in</button>
 	</form>
 	</div>

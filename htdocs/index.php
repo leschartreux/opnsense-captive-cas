@@ -1,16 +1,3 @@
-<?php require_once 'phpCAS-1.3.6/CAS.php';
-
-$cas_host='cas.leschartreux.com';
-$cas_port=443;
-$cas_context='/';
-$cas_cert='cas.leschartreux.com.pem';
-
-phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
-phpCAS::setCasServerCACert($cas_cert);
-
-?>
-<!doctype html>
-<html>
 <head>
 
 <meta charset="UTF-8" />
@@ -87,7 +74,6 @@ $( document ).ready(function() {
 			event.preventDefault();
 			// hide alerts
 			$("#alertMSG").addClass("hidden");
-			<?php ?>
 			// try to login
 			$.ajax({
 				type: "POST",
@@ -193,8 +179,8 @@ $( document ).ready(function() {
 	</div>
 	<!-- User option 2: login needed, without username, password -->
 	<div id="login_none" class="hidden">
-	<form class="form-signin">
-	<button class="btn btn-primary btn-block" id="signin_anon" type="button">Sign in</button>
+	<form class="form-signin" action="sso.php">
+	<button class="btn btn-primary btn-block" id="signin_sso" type="submit">Sign in</button>
 	</form>
 	</div>
 	<!-- User option 3: Already logged in, show logout button -->

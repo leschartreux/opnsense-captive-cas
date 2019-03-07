@@ -1,9 +1,9 @@
 <?php require_once 'phpCAS-1.3.6/CAS.php';
 
-$portal_url='https://cpe-portail.leschartreux.com:8000';
-$cas_host='cas.leschartreux.com';
+$portal_url='https://cpative_portal_fqdn:8000';
+$cas_host='cas_fqdn';
 $cas_port=443;
-$cas_context='/';
+$cas_context='/'; // cas
 $cas_cert='/usr/local/etc/cert.pem';
 
 phpCAS::setDebug('/tmp/CAS.log');

@@ -1,5 +1,6 @@
 <?php require_once 'phpCAS-1.3.6/CAS.php';
 
+$portal_url='https://cpe-portail.leschartreux.com:8000';
 $cas_host='cas.leschartreux.com';
 $cas_port=443;
 $cas_context='/';
@@ -11,8 +12,15 @@ phpCAS::setCasServerCACert($cas_cert);
 //phpCAS::setNoCasServerValidation();
 
 
+phpCAS::handleLogoutRequests();
+
+
 phpCAS::forceAuthentication();
 $user = phpCAS::getUser();
+if ( isset($_GET['logout']) )
+{
+	phpCAS::logoutWithRedirectService($portal_url .'/index.php?logout');
+}
 
 ?>
 <html>
@@ -50,40 +58,40 @@ $user = phpCAS::getUser();
             }
 
             $( document ).ready(function() {
- 
-                /**
-                 * login anonymous, only applicable when server is configured without authentication
-                 */
-     
-                    // try to login
-                    $.ajax({
-                        type: "POST",
-                        url: "/api/captiveportal/access/logon/" + zoneid + "/",
-                        dataType:"json",
-                        data:{ user: '<?php echo $user?>', password: '' }
-                    }).done(function(data) {
-                        // redirect on successful login
-                        if (data['clientState'] == 'AUTHORIZED') {
-                            var redir;
-                            if (getURLparams()['redirurl'] != undefined) {
-                                redir='http://'+getURLparams()['redirurl']+'?refresh';
-                            } else {
-                                redir='/index.html'
-                            }
-                            $(location).attr('href',redir);
-                        } else {
-                            $("#inputUsername").val("");
-                            $("#inputPassword").val("");
-                            $("#errorMSGtext").html("login failed");
-                            $("#alertMSG").removeClass("hidden");
-                        }
-                    }).fail(function(){
-                        $("#errorMSGtext").html("unable to connect to authentication server");
-                        $("#alertMSG").removeClass("hidden");
-                    });
 
+				/**
+				 * login with authenticated user, use the nologin api with Cas Username
+				 */
+				// try to login
+				$.ajax({
+					type: "POST",
+					url: "/api/captiveportal/access/logon/" + zoneid + "/",
+					dataType:"json",
+					data:{ user: '<?php echo $user?>', password: '' }
+				}).done(function(data) {
+					// redirect on successful login
+					if (data['clientState'] == 'AUTHORIZED') {
+						$("#successMSGtext").html("login OK");
+						$("#successMSG").removeClass("hidden");
+						/*var redir=getURLparams();
+						if (redir['redirurl'] != undefined) {
+							window.location.replace('inde.php'); = 'http://'+redir['redirurl']+'?refresh';
+						} else {
+							window.location.reload();
+						}*/
+						window.location.replace("index.php");
+					} else {
+						$("#errorMSGtext").html("login failed");
+						$("#alertMSG").removeClass("hidden");
+					}
+				}).fail(function(){
+					$("#errorMSGtext").html("unable to connect to authentication server");
+					$("#alertMSG").removeClass("hidden");
+				});
+	
+
+			});
  
-            });
         </script>
     </head>
     <body>
@@ -99,33 +107,14 @@ $user = phpCAS::getUser();
             </nav>
         </header>
         <main class="page-content col-sm-6 col-sm-push-3">
-          <!-- User option 1: login needed with name and password -->
-          <div id="login_password" class="hidden">
-              <form class="form-signin">
-                  <h2 class="form-signin-heading">Please sign in</h2>
-                  <label for="inputUsername" class="sr-only">Username</label>
-                  <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus autocomplete="none" autocapitalize="none" autocorrect="off">
-                  <label for="inputPassword" class="sr-only">Password</label>
-                  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                  <button class="btn btn-primary btn-block" id="signin" type="button">Sign in</button>
-              </form>
-          </div>
-          <!-- User option 2: login needed, without username, password -->
-          <div id="login_none" class="hidden">
-            <form class="form-signin">
-                <button class="btn btn-primary btn-block" id="signin_anon" type="button">Sign in</button>
-            </form>
-          </div>
-          <!-- User option 3: Already logged in, show logout button -->
-          <div id="logout_frm" class="hidden">
-            <form class="form-signin">
-                <button class="btn btn-primary btn-block" id="logoff" type="button">Logout</button>
-            </form>
-          </div>
-          <!-- Message dialog -->
+            <!-- Message dialog -->
           <div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
               <button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <span id="errorMSGtext"></span>
+          </div>
+          <div class="alert alert-success alert-dismissible hidden" role="alert" id="successMSG">
+              <button type="button" class="close" id="btnSuccessCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <span id="successMSGtext"></span>
           </div>
         </main>
 

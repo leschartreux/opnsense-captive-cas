@@ -33,174 +33,106 @@ function getURLparams()
 }
 
 $( document ).ready(function() {
-	/**
-	 * logon action
-	 */
-	$("#signin").click(function (event) {
-		event.preventDefault();
-		// hide alerts
-		$("#alertMSG").addClass("hidden");
-		// try to login
+		
+		var redir=getURLparams();
+		if (redir.indexOf('logout') >= 0) {
+			// hide alerts
+			$("#alertMSG").addClass("hidden");
+			// try to logoff
+			$.ajax({
+				type: "POST",
+				url: "/api/captiveportal/access/logoff/" + zoneid + "/",
+				dataType:"json",
+				data:{ user: '', password: '' }
+			}).done(function(data) {
+				// refresh page
+				window.location = window.location.pathname + window.location.hash;
+			}).fail(function(){
+				$("#errorMSGtext").html("unable to connect to authentication server");
+				$("#alertMSG").removeClass("hidden");
+			});
+		}
+
+		/**
+		 * close / hide error message
+		 */
+		$("#btnCloseError").click(function(){
+			$("#alertMSG").addClass("hidden");
+		});
+
+		/**
+		 * execute after pageload
+		 */
+		
 		$.ajax({
 			type: "POST",
-			url: "/api/captiveportal/access/logon/" + zoneid + "/",
+			url: "/api/captiveportal/access/status/" + zoneid + "/",
 			dataType:"json",
 			data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
 		}).done(function(data) {
-			// redirect on successful login
+			var redirurl=getURLparams()['redirurl'];
 			if (data['clientState'] == 'AUTHORIZED') {
-				if (getURLparams()['redirurl'] != undefined) {
-					window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
-				} else {
-					// no target, reload page
-					window.location.reload();
-				}
-			} else {
-				$("#inputUsername").val("");
-				$("#inputPassword").val("");
-				$("#errorMSGtext").html("authentication failed");
+				$("#logout_frm").removeClass('hidden');
+				$("#successMSG").removeClass('hidden');
+			} else if (data['authType'] == 'none') {
+				$("#login_none").removeClass('hidden');
 				$("#alertMSG").removeClass("hidden");
+			} else {
+				$("#login_password").removeClass('hidden');
 			}
 		}).fail(function(){
 			$("#errorMSGtext").html("unable to connect to authentication server");
 			$("#alertMSG").removeClass("hidden");
 		});
-	});
-
-		/**
-		 * login anonymous, only applicable when server is configured without authentication
-		 */
-		$("#signin_anon").click(function (event) {
-			event.preventDefault();
-			// hide alerts
-			$("#alertMSG").addClass("hidden");
-			// try to login
-			$.ajax({
-				type: "POST",
-				url: "/api/captiveportal/access/logon/" + zoneid + "/",
-				dataType:"json",
-				data:{ user: 'toto', password: '' }
-			}).done(function(data) {
-				// redirect on successful login
-				if (data['clientState'] == 'AUTHORIZED') {
-					if (getURLparams()['redirurl'] != undefined) {
-						window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
-					} else {
-						window.location.reload();
-					}
-				} else {
-					$("#inputUsername").val("");
-					$("#inputPassword").val("");
-					$("#errorMSGtext").html("login failed");
-					$("#alertMSG").removeClass("hidden");
-				}
-			}).fail(function(){
-				$("#errorMSGtext").html("unable to connect to authentication server");
-				$("#alertMSG").removeClass("hidden");
-			});
-		});
-
-			/**
-			 * logoff action
-			 */
-			$("#logoff").click(function (event) {
-				event.preventDefault();
-				// hide alerts
-				$("#alertMSG").addClass("hidden");
-				// try to login
-				$.ajax({
-					type: "POST",
-					url: "/api/captiveportal/access/logoff/" + zoneid + "/",
-					dataType:"json",
-					data:{ user: '', password: '' }
-				}).done(function(data) {
-					// refresh page
-					window.location.reload();
-				}).fail(function(){
-					$("#errorMSGtext").html("unable to connect to authentication server");
-					$("#alertMSG").removeClass("hidden");
-				});
-			});
-
-				/**
-				 * close / hide error message
-				 */
-				$("#btnCloseError").click(function(){
-					$("#alertMSG").addClass("hidden");
-				});
-
-					/**
-					 * execute after pageload
-					 */
-					$.ajax({
-						type: "POST",
-						url: "/api/captiveportal/access/status/" + zoneid + "/",
-						dataType:"json",
-						data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
-					}).done(function(data) {
-						if (data['clientState'] == 'AUTHORIZED') {
-							$("#logout_frm").removeClass('hidden');
-						} else if (data['authType'] == 'none') {
-							$("#login_none").removeClass('hidden');
-							if (getURLparams()['redirurl'] != undefined)
-							{
-								$("#formsso").attr('action','sso.php?'+getURLparams()['redirurl'];
-							}
-						} else {
-							$("#login_password").removeClass('hidden');
-						}
-					}).fail(function(){
-						$("#errorMSGtext").html("unable to connect to authentication server");
-						$("#alertMSG").removeClass("hidden");
-					});
 
 });
-	</script>
-	</head>
-	<body>
+</script>
+
+</head>
+
+<body>
 	<header class="page-head">
-	<nav class="navbar navbar-default" >
-	<div class="container-fluid">
-	<div class="navbar-header">
-	<a class="navbar-brand" href="#">
-	<img class="brand-logo" src="images/default-logo.png" height="30" width="150">
-	</a>
-	</div>
-	</div>
-	</nav>
+		<nav class="navbar navbar-default" >
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">
+					<img class="brand-logo" src="images/default-logo.png" height="30" width="150">
+					</a>
+				</div>
+			</div>
+		</nav>
 	</header>
 	<main class="page-content col-sm-6 col-sm-push-3">
-	<!-- User option 1: login needed with name and password -->
-	<div id="login_password" class="hidden">
-	<form class="form-signin">
-	<h2 class="form-signin-heading">Please sign in</h2>
-	<label for="inputUsername" class="sr-only">Username</label>
-	<input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus autocomplete="none" autocapitalize="none" autocorrect="off">
-	<label for="inputPassword" class="sr-only">Password</label>
-	<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-	<button class="btn btn-primary btn-block" id="signin" type="button">Sign in</button>
-	</form>
-	</div>
-	<!-- User option 2: login needed, without username, password -->
-	<div id="login_none" class="hidden">
-	<form class="form-signin" id="formsso" action="sso.php" >
-	<button class="btn btn-primary btn-block" id="signin_sso" type="submit">Connexion CAS</button>
-	</form>
-	</div>
-	<!-- User option 3: Already logged in, show logout button -->
-	<div id="logout_frm" class="hidden">
-	<form class="form-signin">
-	<button class="btn btn-primary btn-block" id="logoff" type="button">Logout</button>
-	</form>
-	</div>
-	<!-- Message dialog -->
-	<div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
-	<button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	<span id="errorMSGtext"></span>
-	</div>
+		<!-- Message dialog -->
+		<div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
+			<button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<span id="errorMSGtext">Vous devez vous connecter pour accéder à Internet</span>
+		</div>
+		<div class="alert alert-success alert-dismissible hidden" role="alert" id="successMSG">
+              <button type="button" class="close" id="btnSuccessCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <span id="successMSGtext">Vous êtes connectés, vous pouvez accéder à Internet.</span>
+          </div>
+		<!-- User option 2: login needed, without username, password -->
+		<div id="login_none" class="hidden">
+			<form class="form-signin" id="formsso">
+				<?php
+					if ( isset($_GET['redirurl']) )
+						$redir = "sso.php?redirurl=" . $_GET['redirurl'];
+					else
+						$redir = "sso.php";
+				?>
+				<a class="btn btn-primary btn-block" id="signin_sso" role="button" href="<?php echo $redir?>" >Connexion CAS</a>
+			</form>
+		</div>
+		<div id="logout_frm" class="hidden">
+			<form class="form-signin" id="formlogout">
+				<a class="btn btn-primary btn-block" id="logoff" role="button" href='sso.php?logout'>Déconnexion CAS</a>
+			</form>
+		</div>
+
 	</main>
 
 	<!-- bootstrap script -->
 	<script src="js/bootstrap.min.js"></script>
 	</body>
-	</html>
+</html>

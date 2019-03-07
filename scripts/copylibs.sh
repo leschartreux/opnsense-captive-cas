@@ -18,7 +18,11 @@ do
 	  cp $i $CPROOT$DIR/
 done
 
-#extensions
+#php extensions
+mkdir -p $CPROOT/usr/local/lib/php
+cp -r /usr/local/lib/php/2* $CPROOT/usr/local/lib/php/
+
+#extensions libs
 for R in `cat required`
 do
     echo $R

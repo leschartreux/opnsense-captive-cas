@@ -22,6 +22,6 @@ paths from `/usr/local/opnsenses` are included
 
 ## INSTALL
 1. Add a captive portal zone with No authentication
-2. copy the project in /var/captiveportal/zone0/
+2. copy the project in `/var/captiveportal/zone0/`
 3. launch `sh scripts/copylibs.sh`
 4. overwrite the core files of `opnsense` tree

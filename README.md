@@ -21,14 +21,15 @@ Modified files from the core captive portal.
 Paths from `/usr/local/opnsenses` are included
 
 ## INSTALL
-1. in service/captive portal, add a captive portal zone with No authentication
-2. Copy the project in `/var/captiveportal/zone0/`
-3. On opnsense console :
+1. In Service/Captive portal, add a captive portal zone with No authentication
+2. Add you CAS's server IP in allowed list
+3. Copy the project in `/var/captiveportal/zone0/`
+4. On opnsense console :
    
    ```shell
    # cd /var/captiveportal/zone0/scripts
    # sh copylibs.sh
    ```
    
-4. Overwrite the core files of `opnsense` tree
-5. Apply CP modification from ui to generate the webserver config.
+5. Overwrite the core files of `opnsense` tree
+6. Apply CP modification from ui to generate the webserver config.

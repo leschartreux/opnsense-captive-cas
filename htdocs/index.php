@@ -106,11 +106,11 @@ $( document ).ready(function() {
 		<!-- Message dialog -->
 		<div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
 			<button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<span id="errorMSGtext">Vous devez vous connecter pour accéder à Internet</span>
+			<span id="errorMSGtext">You have to connect to get Internet access.</span>
 		</div>
 		<div class="alert alert-success alert-dismissible hidden" role="alert" id="successMSG">
               <button type="button" class="close" id="btnSuccessCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <span id="successMSGtext">Vous êtes connectés, vous pouvez accéder à Internet.</span>
+              <span id="successMSGtext">You ar now connected, You can browse to Internet.</span>
           </div>
 		<!-- User option 2: login needed, without username, password -->
 		<div id="login_none" class="hidden">
@@ -121,12 +121,12 @@ $( document ).ready(function() {
 					else
 						$redir = "sso.php";
 				?>
-				<a class="btn btn-primary btn-block" id="signin_sso" role="button" href="<?php echo $redir?>" >Connexion CAS</a>
+				<a class="btn btn-primary btn-block" id="signin_sso" role="button" href="<?php echo $redir?>" >Login to CAS server</a>
 			</form>
 		</div>
 		<div id="logout_frm" class="hidden">
 			<form class="form-signin" id="formlogout">
-				<a class="btn btn-primary btn-block" id="logoff" role="button" href='sso.php?logout'>Déconnexion CAS</a>
+				<a class="btn btn-primary btn-block" id="logoff" role="button" href='sso.php?logout'>Logout CAS server</a>
 			</form>
 		</div>
 
